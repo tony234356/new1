@@ -113,12 +113,123 @@
             {
                 id: 1,
                 title: "Actress Portrait Edit 1",
-                thumbnail: "image (3).png",
-                fullImage: "image (3).png",
-                description: "A stunning digital edit of a popular actress. ",
+                thumbnail: "https://picsum.photos/300/200?random=1",
+                fullImage: "https://picsum.photos/1000/700?random=1",
+                description: "A stunning digital edit of a popular actress. This image showcases intricate details and vibrant colors, highlighting the subject's features with artistic flair.",
                 category: "actress nude edits"
             },
-           
+            {
+                id: 2,
+                title: "Glamorous Actress Shot 2",
+                thumbnail: "https://picsum.photos/300/200?random=2",
+                fullImage: "https://picsum.photos/1000/700?random=2",
+                description: "Creative photo edit of a Bollywood star. The lighting and composition draw the viewer's eye, creating a captivating visual experience. Perfect for portfolio display.",
+                category: "actress nude edits"
+            },
+            {
+                id: 3,
+                title: "Urban Dreams Edit 3",
+                thumbnail: "https://picsum.photos/300/200?random=3",
+                fullImage: "https://picsum.photos/1000/700?random=3",
+                description: "Futuristic take on a celebrity photo. This edit incorporates elements of cyberpunk aesthetics with sleek lines and neon accents, giving the image a modern and edgy feel.",
+                category: "actress nude edits"
+            },
+            {
+                id: 4,
+                title: "Traditional Look Remastered 4",
+                thumbnail: "https://picsum.photos/300/200?random=4",
+                fullImage: "https://picsum.photos/1000/700?random=4",
+                description: "Classic actress pose with a modern edit. This image blends traditional Indian attire with contemporary digital art techniques, resulting in a timeless yet fresh appearance.",
+                category: "actress nude edits"
+            },
+            {
+                id: 5,
+                title: "Elegant Studio Portrait 5",
+                thumbnail: "https://picsum.photos/300/200?random=5",
+                fullImage: "https://picsum.photos/1000/700?random=5",
+                description: "An elegant studio portrait, digitally enhanced for magazine quality. The focus is on subtle details and a polished finish, ideal for high-end fashion portfolios.",
+                category: "actress nude edits"
+            },
+            {
+                id: 6,
+                title: "Cinematic Scene Edit 6",
+                thumbnail: "https://picsum.photos/300/200?random=6",
+                fullImage: "https://picsum.photos/1000/700?random=6",
+                description: "A dramatic edit transforming a photo into a cinematic still. Utilizes advanced color grading and composition to evoke a strong narrative and emotional depth.",
+                category: "actress nude edits"
+            },
+            {
+                id: 7,
+                title: "Fantasy Themed Edit 7",
+                thumbnail: "https://picsum.photos/300/200?random=7",
+                fullImage: "https://picsum.photos/1000/700?random=7",
+                description: "An ethereal fantasy-themed edit, placing the actress in a magical setting. Features glowing effects and mystical elements, perfect for concept art lovers.",
+                category: "actress nude edits"
+            },
+            {
+                id: 8,
+                title: "Abstract Art Overlay 8",
+                thumbnail: "https://picsum.photos/300/200?random=8",
+                fullImage: "https://picsum.photos/1000/700?random=8",
+                description: "A unique edit with abstract art overlays and vibrant textures. This piece challenges traditional portraiture, offering a modern and artistic interpretation.",
+                category: "actress nude edits"
+            },
+            {
+                id: 9,
+                title: "Monochrome Majesty 9",
+                thumbnail: "https://picsum.photos/300/200?random=9",
+                fullImage: "https://picsum.photos/1000/700?random=9",
+                description: "A powerful monochrome edit focusing on contrast and shadow play. Highlights the actress's expressions with timeless elegance and dramatic effect.",
+                category: "actress nude edits"
+            },
+            {
+                id: 10,
+                title: "Vibrant Pop Art Style 10",
+                thumbnail: "https://picsum.photos/300/200?random=10",
+                fullImage: "https://picsum.photos/1000/700?random=10",
+                description: "An energetic pop art style edit with bold colors and comic book influences. This lively image brings a playful and dynamic vibe to the celebrity portrait.",
+                category: "actress nude edits"
+            },
+            {
+                id: 11,
+                title: "Starlight Actress Edit",
+                thumbnail: "https://picsum.photos/300/200?random=11",
+                fullImage: "https://picsum.photos/1000/700?random=11",
+                description: "A celestial-themed edit with soft, glowing effects, perfect for a dreamlike aesthetic. Highlights the actress's features under a starry sky.",
+                category: "actress nude edits"
+            },
+            {
+                id: 12,
+                title: "Retro Glamour Look",
+                thumbnail: "https://picsum.photos/300/200?random=12",
+                fullImage: "https://picsum.photos/1000/700?random=12",
+                description: "A vintage-inspired edit with a modern twist, bringing back the charm of old Hollywood. Features classic poses and muted, warm color tones.",
+                category: "actress nude edits"
+            },
+            {
+                id: 13,
+                title: "Neon City Lights",
+                thumbnail: "https://picsum.photos/300/200?random=13",
+                fullImage: "https://picsum.photos/1000/700?random=13",
+                description: "An edgy urban edit bathed in neon lights. Dynamic lighting and vibrant color overlays create a striking, futuristic atmosphere.",
+                category: "actress nude edits"
+            },
+            {
+                id: 14,
+                title: "Serene Morning Portrait",
+                thumbnail: "https://picsum.photos/300/200?random=14",
+                fullImage: "https://picsum.photos/1000/700?random=14",
+                description: "A soft, natural portrait with gentle lighting, enhanced to capture a serene and peaceful mood. Ideal for a calming visual experience.",
+                category: "actress nude edits"
+            },
+            {
+                id: 15,
+                title: "Dark Academia Inspired",
+                thumbnail: "https://picsum.photos/300/200?random=15",
+                fullImage: "https://picsum.photos/1000/700?random=15",
+                description: "An atmospheric edit with a dark academia aesthetic, featuring rich, muted tones and classical elements. Evokes a sense of mystery and intellectual depth.",
+                category: "actress nude edits"
+            }
         ];
 
         // --- Photo Detail Modal Component ---
@@ -163,7 +274,6 @@
                         />
                         <div className="p-6">
                             <h2 className={`text-3xl font-bold mb-2 text-white`}>{photo.title}</h2>
-                            {/* Author and Date lines removed */}
                             <p className={`text-gray-200 leading-relaxed`}>{photo.description}</p>
                             <div className="mt-6 flex justify-end">
                                 <button
@@ -213,7 +323,6 @@
                     <div className="p-5 flex-grow flex flex-col justify-between">
                         <div>
                             <h2 className="text-xl font-semibold text-white mb-1 leading-tight">{content.title}</h2>
-                            {/* Author and Date lines removed */}
                         </div>
                         <div className="mt-4 flex justify-between flex-wrap gap-2">
                             <button
@@ -240,7 +349,6 @@
         // --- Main App Component ---
         const App = () => {
             const [searchTerm, setSearchTerm] = useState('');
-            // Sort order options updated as date is removed
             const [sortOrderPhotos, setSortOrderPhotos] = useState('title-asc'); 
             const [actressPhotos, setActressPhotos] = useState([]);
             const [actressPhotosDisplayCount, setActressPhotosDisplayCount] = useState(6);
@@ -351,7 +459,6 @@
                                         className={`p-2 rounded-lg border bg-gray-700 border-gray-600 text-white`}
                                         aria-label="Sort actress photos"
                                     >
-                                        {/* Date-based sorting options removed */}
                                         <option value="title-asc">Title (A-Z)</option>
                                         <option value="title-desc">Title (Z-A)</option>
                                     </select>
