@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Photo Showcase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Base font for the entire application */
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Modal overlay styling */
+        .modal {
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+
+        /* CSS for the blur effect on images */
+        .img-blurred {
+            filter: blur(8px);
+        }
+        .img-clear {
+            filter: blur(0px);
+        }
+        .img-transition {
+            transition: filter 0.5s ease-in-out;
+        }
+
+        /* Dark mode styles (permanently applied) */
+        body.dark {
+            background-color: #1a202c; /* bg-gray-900 */
+            color: #e2e8f0; /* text-gray-300 */
+        }
+        .dark .bg-white { /* Ensure components using bg-white switch to dark mode */
+            background-color: #2d3748; /* bg-gray-800 */
+        }
+        .dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+        .dark .text-gray-700 {
+            color: #cbd5e0;
+        }
+        .dark .text-gray-600 {
+            color: #a0aec0;
+        }
+        .dark .text-gray-500 {
+            color: #718096;
+        }
+        .dark .border-blue-300 {
+            border-color: #63b3ed; /* Adjusted for dark mode visibility */
+        }
+        .dark .border-green-300 {
+            border-color: #68d391; /* Adjusted for dark mode visibility */
+        }
+        .dark .bg-blue-700 { /* Example header background in dark mode */
+            background-color: #2d3748; /* bg-gray-800 */
+        }
+        .dark .text-blue-200 { /* Example header subtitle in dark mode */
+            color: #a0aec0; /* text-gray-400 */
+        }
+        .dark .modal-content {
+            background-color: #2d3748; /* bg-gray-800 */
+        }
+        .dark .text-gray-900 { /* Example modal close button */
+            color: #e2e8f0; /* text-white */
+        }
+        .dark input, .dark select {
+            background-color: #4a5568; /* bg-gray-700 */
+            color: #e2e8f0; /* text-white */
+            border-color: #718096; /* border-gray-600 */
+        }
+        .dark input::placeholder {
+            color: #a0aec0; /* placeholder-gray-400 */
+        }
+        .dark .bg-gray-900 { /* Main container background */
+            background-color: #1a202c;
+        }
+        .dark .text-gray-300 { /* Main container text color */
+            color: #e2e8f0;
+        }
+         .dark .bg-gray-800 { /* Header, modal, card backgrounds */
+            background-color: #2d3748;
+        }
+        .dark .text-white { /* Primary text color for dark mode */
+            color: #e2e8f0;
+        }
+        .dark .border-blue-500 {
+            border-color: #63b3ed;
+        }
+        .dark .border-green-500 {
+            border-color: #68d391;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useCallback } = React;
+        const { createRoot } = ReactDOM;
+
+        // --- Simulated Photo Data ---
+        // Author and date fields have been removed.
+        const allContent = [
+            {
+                id: 1,
+                title: "Actress Portrait Edit 1",
+                thumbnail: "image (3).png",
+                fullImage: "image (3).png",
+                description: "A stunning digital edit of a popular actress. ",
+                category: "actress nude edits"
+            },
+           
+        ];
+
+        // --- Photo Detail Modal Component ---
+        const PhotoModal = ({ photo, onClose }) => {
+            if (!photo) return null;
+
+            const [downloadClickCount, setDownloadClickCount] = useState(0);
+            const [isDownloaded, setIsDownloaded] = useState(false);
+
+            const handleDownloadButtonClick = (e) => {
+                e.stopPropagation();
+                if (!isDownloaded) {
+                    setDownloadClickCount(prevCount => prevCount + 1);
+                    
+                    if (downloadClickCount + 1 >= 1) {
+                        const link = document.createElement('a');
+                        link.href = photo.fullImage;
+                        link.download = `${photo.title.replace(/[^a-z0-9_]+/gi, '-')}.jpg`; 
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setIsDownloaded(true);
+                    }
+                }
+            };
+
+            return (
+                <div className="fixed inset-0 flex items-center justify-center modal p-4">
+                    <div className={`rounded-lg shadow-xl max-w-2xl w-full relative transform transition-all scale-100 opacity-100 bg-gray-800 text-white modal-content`}>
+                        <button
+                            onClick={onClose}
+                            className={`absolute top-3 right-3 text-3xl font-bold text-gray-300 hover:text-white`}
+                            aria-label="Close"
+                        >
+                            ×
+                        </button>
+                        <img
+                            src={photo.fullImage}
+                            alt={photo.title}
+                            className="w-full h-auto max-h-[70vh] object-contain rounded-t-lg"
+                            onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/1000x700/cccccc/333333?text=Image+Error`; }}
+                        />
+                        <div className="p-6">
+                            <h2 className={`text-3xl font-bold mb-2 text-white`}>{photo.title}</h2>
+                            {/* Author and Date lines removed */}
+                            <p className={`text-gray-200 leading-relaxed`}>{photo.description}</p>
+                            <div className="mt-6 flex justify-end">
+                                <button
+                                    onClick={handleDownloadButtonClick}
+                                    className={`px-6 py-3 rounded-lg transition duration-300 shadow-md ${
+                                        isDownloaded ? 'bg-gray-500 text-gray-400 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'
+                                    }`}
+                                    disabled={isDownloaded}
+                                >
+                                    {isDownloaded ? 'Downloaded' : 'Download Full Image'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Photo Card Component ---
+        const PhotoCard = ({ content, onContentClick }) => {
+            const [isBlurred, setIsBlurred] = useState(true);
+            const [clearClickCount, setClearClickCount] = useState(0); 
+            
+            const handleClearButtonClick = (e) => {
+                e.stopPropagation();
+                if (isBlurred) {
+                    setClearClickCount(prevCount => prevCount + 1);
+                    if (clearClickCount + 1 >= 1) { 
+                        setIsBlurred(false); 
+                    }
+                }
+            };
+
+            const imageSrc = !isBlurred ? content.fullImage : content.thumbnail;
+
+            return (
+                <div
+                    className="bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden cursor-pointer flex flex-col"
+                    onClick={() => onContentClick(content)}
+                >
+                    <img
+                        src={imageSrc}
+                        alt={content.title}
+                        className={`w-full h-48 object-contain img-transition ${isBlurred ? 'img-blurred' : 'img-clear'}`}
+                        onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/300x200/cccccc/333333?text=Error`; }}
+                    />
+                    <div className="p-5 flex-grow flex flex-col justify-between">
+                        <div>
+                            <h2 className="text-xl font-semibold text-white mb-1 leading-tight">{content.title}</h2>
+                            {/* Author and Date lines removed */}
+                        </div>
+                        <div className="mt-4 flex justify-between flex-wrap gap-2">
+                            <button
+                                onClick={handleClearButtonClick}
+                                className={`flex-1 px-3 py-2 rounded-lg transition duration-300 text-sm shadow-md ${
+                                    isBlurred ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                                }`}
+                                disabled={!isBlurred}
+                            >
+                                {isBlurred ? 'Clear Blur' : 'Image Clear'}
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onContentClick(content); }}
+                                className="flex-1 px-3 py-2 rounded-lg transition duration-300 text-sm shadow-md bg-purple-600 text-white hover:bg-purple-700"
+                            >
+                                Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main App Component ---
+        const App = () => {
+            const [searchTerm, setSearchTerm] = useState('');
+            // Sort order options updated as date is removed
+            const [sortOrderPhotos, setSortOrderPhotos] = useState('title-asc'); 
+            const [actressPhotos, setActressPhotos] = useState([]);
+            const [actressPhotosDisplayCount, setActressPhotosDisplayCount] = useState(6);
+            const [selectedContent, setSelectedContent] = useState(null);
+
+            const actressObserverTarget = useRef(null);
+
+            useEffect(() => {
+                document.body.classList.add('dark');
+            }, []);
+
+            const getFilteredAndSortedContent = useCallback((contentArray, sortOrder) => {
+                let filtered = contentArray.filter(item =>
+                    (item.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (item.description || "").toLowerCase().includes(searchTerm.toLowerCase())
+                );
+
+                filtered.sort((a, b) => {
+                    const titleA = a.title || "";
+                    const titleB = b.title || "";
+
+                    if (sortOrder === 'title-asc') {
+                        return titleA.localeCompare(titleB);
+                    } else if (sortOrder === 'title-desc') {
+                        return titleB.localeCompare(titleA);
+                    }
+                    return 0;
+                });
+                return filtered;
+            }, [searchTerm]);
+
+            useEffect(() => {
+                const filteredActress = getFilteredAndSortedContent(allContent, sortOrderPhotos);
+                setActressPhotos(filteredActress.slice(0, actressPhotosDisplayCount));
+            }, [searchTerm, sortOrderPhotos, actressPhotosDisplayCount, getFilteredAndSortedContent]);
+
+            useEffect(() => {
+                const loadMoreItems = (currentLength, setDisplayCount) => {
+                    const totalRelevantContent = allContent.filter(item =>
+                        (item.title || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (item.description || "").toLowerCase().includes(searchTerm.toLowerCase())
+                    ).length;
+
+                    if (currentLength < totalRelevantContent) {
+                        setDisplayCount(prevCount => prevCount + 3);
+                    }
+                };
+
+                const actressObserver = new IntersectionObserver(
+                    (entries) => {
+                        if (entries[0].isIntersecting) {
+                           loadMoreItems(actressPhotos.length, setActressPhotosDisplayCount);
+                        }
+                    },
+                    { threshold: 0.1 }
+                );
+
+                if (actressObserverTarget.current) {
+                    actressObserver.observe(actressObserverTarget.current);
+                }
+
+                return () => {
+                    if (actressObserverTarget.current) {
+                        actressObserver.unobserve(actressObserverTarget.current);
+                    }
+                };
+            }, [actressPhotos.length, searchTerm]);
+
+            const openContentModal = (content) => {
+                setSelectedContent(content);
+            };
+
+            const closeContentModal = () => {
+                setSelectedContent(null);
+            };
+
+            return (
+                <div className={`min-h-screen flex flex-col bg-gray-900 text-gray-300`}>
+                    <header className={`p-5 shadow-lg bg-gray-800`}>
+                        <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <h1 className="text-4xl font-extrabold tracking-wide text-center sm:text-left text-white">Daily Showcase</h1>
+                            <div className="flex items-center gap-4 w-full sm:w-auto">
+                                <input
+                                    type="text"
+                                    placeholder="Search content..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className={`p-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-64 bg-gray-700 border-gray-600 text-white placeholder-gray-400`}
+                                    aria-label="Search content"
+                                />
+                            </div>
+                        </div>
+                        <p className={`text-center mt-2 text-lg text-gray-400`}>Explore adult content daily 5 updates videos and nude edits
+                        </p>
+                        <p className="text-center mt-2 text-md text-gray-400">
+                            Want to request new content? <a href="https://docs.google.com/forms/d/e/1FAIpQLSc6XnvjChlXAb50BOdnW8UZT2DBF66mPv4kgCx_m78HKNdGNg/viewform?usp=header" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">Fill out our request form!</a>
+                        </p>
+                    </header>
+
+                    <main className="container mx-auto p-6 flex-grow">
+                        <div className="grid grid-cols-1 gap-8">
+                            <div>
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className={`text-3xl font-bold border-b-2 pb-2 text-white border-blue-500`}>Actress nude Edits</h2>
+                                    <select
+                                        value={sortOrderPhotos}
+                                        onChange={(e) => setSortOrderPhotos(e.target.value)}
+                                        className={`p-2 rounded-lg border bg-gray-700 border-gray-600 text-white`}
+                                        aria-label="Sort actress photos"
+                                    >
+                                        {/* Date-based sorting options removed */}
+                                        <option value="title-asc">Title (A-Z)</option>
+                                        <option value="title-desc">Title (Z-A)</option>
+                                    </select>
+                                </div>
+                                {actressPhotos.length === 0 ? (
+                                    <p className={`text-center text-lg mt-10 text-gray-400`}>No actress photos available matching your search.</p>
+                                ) : (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                        {actressPhotos.map((content) => (
+                                            <PhotoCard key={content.id} content={content} onContentClick={openContentModal} />
+                                        ))}
+                                    </div>
+                                )}
+                                <div ref={actressObserverTarget} className="h-10"></div>
+                            </div>
+                        </div>
+                    </main>
+
+                    <footer className={`p-6 text-center text-sm bg-gray-800 text-gray-400`}>
+                        <p>© {new Date().getFullYear()} Daily Showcase. All rights reserved.</p>
+                    </footer>
+
+                    {selectedContent && (
+                        <PhotoModal photo={selectedContent} onClose={closeContentModal} />
+                    )}
+                </div>
+            );
+        };
+
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
